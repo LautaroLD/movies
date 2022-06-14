@@ -7,22 +7,17 @@ window.addEventListener('hashchange', () => {
         const [page, id] = window.location.hash.split('=')
         root.innerHTML = ''
         document.documentElement.scrollTop = 0
-
         createMoviePage(id)
     } else if (window.location.hash.startsWith('#category=')) {
         const [page, name_id] = window.location.hash.split('=')
         const [name, id] = name_id.split('-')
-        footer.style.display = 'flex'
         root.innerHTML = ''
         createCategoryPage(id, name)
         document.documentElement.scrollTop = 0
-
     } else {
-        footer.style.display = 'flex'
         root.innerHTML = ''
         openHome()
         document.documentElement.scrollTop = 0
-
     }
 })
 
@@ -97,34 +92,38 @@ async function createCategoryItem() {
 async function createMoviePage(id) {
     const res = await fetch(URL_MOVIE_ID(id))
     const data = await res.json()
-    const movieRootDesktop = document.createElement('section')
-    movieRootDesktop.className = 'movieRootDesktop'
+    const movieRoot = document.createElement('section')
+    movieRoot.className = 'movieRoot'
 
-    const movieLeftDesktop = document.createElement('article')
-    movieLeftDesktop.className = 'movieLeftDesktop'
-    const movieImgDesktop = document.createElement('img')
-    movieImgDesktop.alt = data.title
-    movieImgDesktop.className = 'movieImgDesktop'
-    movieImgDesktop.src = URL_IMG(data.poster_path)
-    movieLeftDesktop.append(movieImgDesktop)
+    const movieLeft = document.createElement('article')
+    movieLeft.className = 'movieLeft'
+    const movieImg = document.createElement('img')
+    movieImg.alt = data.title
+    observer.observe(movieImg)
+    movieImg.className = 'loadScreenMovies--item'
+    movieImg.setAttribute('data-img', URL_IMG(data.poster_path))
+    movieImg.addEventListener('load', () => {
+        movieImg.classList.remove('loadScreenMovies--item',)
+    })
+    movieLeft.append(movieImg)
 
-    const movieRightDesktop = document.createElement('article')
-    movieRightDesktop.className = 'movieRightDesktop'
-    const movieTitleDesktop = document.createElement('h3')
-    movieTitleDesktop.textContent = data.title
-    movieTitleDesktop.className = 'movieTitleDesktop'
-    const movieDateDesktop = document.createElement('p')
-    movieDateDesktop.className = 'movieDateDesktop'
-    movieDateDesktop.textContent = data.release_date
-    const movieOverviewDesktop = document.createElement('p')
-    movieOverviewDesktop.className = 'movieOverviewDesktop'
-    movieOverviewDesktop.textContent = data.overview
-    const movieVotesDesktop = document.createElement('i')
-    movieVotesDesktop.className = 'bx bxs-star'
-    movieVotesDesktop.textContent = data.vote_average
-    const moviePeopleDesktop = document.createElement('i')
-    moviePeopleDesktop.className = 'bx bx-user'
-    moviePeopleDesktop.textContent = data.vote_count
+    const movieRight = document.createElement('article')
+    movieRight.className = 'movieRight'
+    const movieTitle = document.createElement('h3')
+    movieTitle.textContent = data.title
+    movieTitle.className = 'movieTitle'
+    const movieDate = document.createElement('p')
+    movieDate.className = 'movieDate'
+    movieDate.textContent = data.release_date
+    const movieOverview = document.createElement('p')
+    movieOverview.className = 'movieOverview'
+    movieOverview.textContent = data.overview
+    const movieVotes = document.createElement('i')
+    movieVotes.className = 'bx bxs-star'
+    movieVotes.textContent = data.vote_average
+    const moviePeople = document.createElement('i')
+    moviePeople.className = 'bx bx-user'
+    moviePeople.textContent = data.vote_count
 
     const movieCategoryList = document.createElement('article')
     movieCategoryList.className = 'movieCategoryList'
@@ -138,14 +137,14 @@ async function createMoviePage(id) {
         })
         movieCategoryList.appendChild(movieCategory)
     })
-    movieRightDesktop.append(movieTitleDesktop, movieDateDesktop, movieOverviewDesktop, movieVotesDesktop, moviePeopleDesktop)
+    movieRight.append(movieTitle, movieDate, movieOverview, movieVotes, moviePeople)
 
-    const movieBottomDesktop = document.createElement('article')
-    movieBottomDesktop.className = 'movieBottomDesktop'
-    createSimilarContainer(data.id, movieBottomDesktop)
+    const movieBottom = document.createElement('article')
+    movieBottom.className = 'movieBottom'
+    createSimilarContainer(data.id, movieBottom)
 
-    movieRootDesktop.append(movieLeftDesktop, movieRightDesktop, movieCategoryList, movieBottomDesktop)
-    root.appendChild(movieRootDesktop)
+    movieRoot.append(movieLeft, movieRight, movieCategoryList, movieBottom)
+    root.appendChild(movieRoot)
 }
 
 function createDetailsMovie(data, container) {
