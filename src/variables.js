@@ -10,6 +10,10 @@ const URL_SEARCH = (input) => `${URL_BASE}search/movie${URL_KEY}&query=${input}`
 const root = document.getElementById('root')
 const btnReturnBack = document.getElementById('btnReturnBack')
 const btnReturnHome = document.getElementById('btnReturnHome')
-
+const categoriesSection = document.getElementById('categoriesSection')
+const headerContainer = document.querySelector('header .header-search')
+const resultsContainer = document.getElementById('resultsContainer')
 let page = 1
 let infiniteScroll
+let ejectFunction 
+

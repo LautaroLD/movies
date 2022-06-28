@@ -1,18 +1,7 @@
 import { createMovieItem } from "./CreateMovieItem.js"
+import { loadMoreMovies } from "./LoadMoreMovies.js"
 
-async function loadMoreMovies() {
 
-    const { scrollHeight, scrollTop, clientHeight } = document.documentElement
-    infiniteScroll = (scrollTop + clientHeight) >= (scrollHeight - 180)
-    if (infiniteScroll) {
-        page++
-        const res = await fetch(`${URL_MOVIES}&page=${page}`)
-        const data = await res.json()
-        const container = document.getElementById('pageTrendsDiv')
-        const movies = data.results
-        createMovieItem(movies, container, false)
-    }
-}
 async function openTrendsPage() {
 
     const res = await fetch(`${URL_MOVIES}&page=${page}`)
@@ -36,23 +25,12 @@ async function openTrendsPage() {
     const moreBtn = document.createElement('a')
     moreBtn.textContent = 'More'
     moreBtn.className = 'moreBtn'
-
-    const btn = document.createElement('i')
-    btn.className = 'bx bx-chevron-up'
-    btn.addEventListener('click', () => {
-        document.documentElement.scrollTop = 0
-    })
-    window.addEventListener('scroll', () => {
-        if (window.scrollY >= document.documentElement.clientHeight) {
-            btn.style.display = 'initial'
-        } else {
-            btn.style.display = 'none'
-        }
-    })
-
     pageTrendsHead.append(pageTrendsTitle)
-    pageTrends.append(pageTrendsHead, pageTrendsDiv, btn)
+    pageTrends.append(pageTrendsHead, pageTrendsDiv)
     root.appendChild(pageTrends)
 
+    ejectFunction = loadMoreMovies(pageTrendsDiv, `${URL_MOVIES}&page=`)
+    window.addEventListener('scroll', ejectFunction, false)
+
 }
-export { openTrendsPage, loadMoreMovies }
+export { openTrendsPage }
